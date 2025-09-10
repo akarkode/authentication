@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from fastapi import Depends
 from fastapi import Request
-from fastapi import Response
 from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
@@ -18,7 +17,7 @@ from app.src.schemas.user import UserBaseModel
 from app.src.database.session import get_async_session
 
 
-router = APIRouter(prefix="/auth/v1/google", tags=["Authentication"])
+router = APIRouter(prefix="/auth/google", tags=["Authentication"])
 logger = logging.getLogger(__name__)
 token_service = TokenService()
 crud_user = CRUDUser()
@@ -33,12 +32,26 @@ async def callback(request: Request, session: AsyncSession = Depends(get_async_s
     try:
         token = await oauth.google.authorize_access_token(request)
         userinfo = token["userinfo"]
-        user = await crud_user.get_by_provider_user_id(session=session, provider="google", provider_user_id=userinfo["sub"])
-        if not user:
+        if not await crud_user.get_by_provider_user_id(session=session, provider="google", provider_user_id=userinfo["sub"]):
             await crud_user.create(session=session, user=User(**UserBaseModel(**userinfo).model_dump(), provider="google", provider_user_id=userinfo["sub"]))
+
         redirect = RedirectResponse("/")
-        redirect.set_cookie("access_token", token_service.generate_access_token(payload=UserBaseModel(**userinfo).model_dump()), httponly=False, secure=True, samesite="strict", max_age=900)
-        redirect.set_cookie("refresh_token", token_service.generate_refresh_token(payload=UserBaseModel(**userinfo).model_dump()), httponly=False, secure=True, samesite="strict", max_age=86400)
+        redirect.set_cookie(
+            key="access_token", 
+            secure=True, 
+            max_age=900,
+            httponly=False, # Change this to True if you want to use HttpOnly cookie session
+            samesite="strict", 
+            value=token_service.generate_access_token(payload=UserBaseModel(**userinfo).model_dump()), 
+        )
+        redirect.set_cookie(
+            key="refresh_token", 
+            secure=True, 
+            max_age=86400,
+            httponly=False, # Change this to True if you want to use HttpOnly cookie session 
+            samesite="strict", 
+            value=token_service.generate_refresh_token(payload=UserBaseModel(**userinfo).model_dump()), 
+        )
         return redirect
     except Exception as error:
         logger.error(error)
