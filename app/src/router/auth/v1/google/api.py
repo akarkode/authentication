@@ -29,16 +29,17 @@ async def login(request: Request):
     return await oauth.google.authorize_redirect(request, settings.REDIRECT_URL)
 
 @router.get("/callback")
-async def callback(request: Request, response: Response, session: AsyncSession = Depends(get_async_session)):
+async def callback(request: Request, session: AsyncSession = Depends(get_async_session)):
     try:
         token = await oauth.google.authorize_access_token(request)
         userinfo = token["userinfo"]
         user = await crud_user.get_by_provider_user_id(session=session, provider="google", provider_user_id=userinfo["sub"])
         if not user:
             await crud_user.create(session=session, user=User(**UserBaseModel(**userinfo).model_dump(), provider="google", provider_user_id=userinfo["sub"]))
-        response.set_cookie("access_token", token_service.generate_access_token(payload=UserBaseModel(**userinfo).model_dump()), httponly=True, secure=True, samesite="strict", max_age=900)
-        response.set_cookie("refresh_token", token_service.generate_refresh_token(payload=UserBaseModel(**userinfo).model_dump()), httponly=True, secure=True, samesite="strict", max_age=86400)
-        return RedirectResponse("/")
+        redirect = RedirectResponse("/")
+        redirect.set_cookie("access_token", token_service.generate_access_token(payload=UserBaseModel(**userinfo).model_dump()), httponly=False, secure=True, samesite="strict", max_age=900)
+        redirect.set_cookie("refresh_token", token_service.generate_refresh_token(payload=UserBaseModel(**userinfo).model_dump()), httponly=False, secure=True, samesite="strict", max_age=86400)
+        return redirect
     except Exception as error:
         logger.error(error)
         raise HTTPException(400)
