@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    img {
+      border-radius: 50%;
+      margin: 10px 0;
+      width: 80px;
+      height: 80px;
+    }
+    a, button {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background: #4285f4;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button:hover, a:hover { background: #357ae8; }
+  </style>
+</head>
+<body>
+  <div class="card" id="app">Loading...</div>
+
+  <script>
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    async function fetchProfile() {
+      const token = getCookie("access_token");
+      if (!token) {
+        showLogin();
+        return;
+      }
+
+      try {
+        const res = await fetch("/v1/user/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById("app").innerHTML = `
+            <h2>Welcome, ${data.name}</h2>
+            <p>Email: ${data.email}</p>
+            <img src="${data.picture}" alt="Profile Picture"/>
+            <br>
+            <button onclick="logout()">Logout</button>
+          `;
+        } else {
+          showLogin();
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById("app").innerHTML = `
+        <h2>Please Login</h2>
+        <a href="/v1/auth/google/login">Login with Google</a>
+      `;
+    }
+
+    async function logout() {
+      const token = getCookie("access_token");
+      if (!token) return showLogin();
+      document.cookie = "access_token=; Max-Age=0; path=/;";
+      showLogin();
+    }
+
+    fetchProfile();
+  </script>
+</body>
+</html>

@@ -18,3 +18,15 @@ class TokenService:
         payload["type"] = "refresh"
         payload["exp"] = datetime.now(timezone.utc) + expires
         return jwt.encode(payload=payload, key=self.secret_key, algorithm=self.algorithm)
+    
+    def validate_access_token(self, token: str):
+        userinfo = jwt.decode(jwt=token, key=self.secret_key, algorithms=self.algorithm, verify=True)
+        if userinfo.get("type") != "access":
+            raise
+        return userinfo
+    
+    def validate_refresh_token(self, token: str):
+        userinfo = jwt.decode(jwt=token, key=self.secret_key, algorithms=self.algorithm, verify=True)
+        if userinfo.get("type") != "refresh":
+            raise
+        return userinfo

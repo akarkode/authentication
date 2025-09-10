@@ -1,15 +1,19 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
+from app.src.router.v1.api import router
 from app.src.core.config import settings
-from app.src.router.auth.v1.google.api import router as google
 
 app = FastAPI(title="Authentication Service")
+app.include_router(router=router)
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
-app.include_router(google)
 
-@app.get("/")
-async def main():
-    return "successfully"
+templates = Jinja2Templates(directory="app/src/templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def main(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html")
