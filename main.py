@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -19,9 +17,3 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
-
-templates = Jinja2Templates(directory="app/src/templates")
-
-@app.get("/", response_class=HTMLResponse)
-async def main(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html")
