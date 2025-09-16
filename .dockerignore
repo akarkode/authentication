@@ -1,0 +1,46 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Distribution / build
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Configs & env
+.env
+.env.*
+*.ini
+*.cfg
+
+# Tests & coverage
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Logs
+*.log
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
