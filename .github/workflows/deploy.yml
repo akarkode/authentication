@@ -20,12 +20,19 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
+      - name: Debug gcloud auth
+        run: gcloud auth list
+
       - name: Configure Docker auth
         run: gcloud auth configure-docker asia-southeast2-docker.pkg.dev
+
+      - name: Debug Artifact Registry
+        run: gcloud artifacts repositories list --location=asia-southeast2
 
       - name: Build and Push Docker image
         run: |
           IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ranting-repo/auth-service:latest"
+          echo "Using image: $IMAGE"
           docker build -t $IMAGE .
           docker push $IMAGE
 
@@ -42,4 +49,3 @@ jobs:
             --min-instances 0 \
             --max-instances 3 \
             --allow-unauthenticated
-
