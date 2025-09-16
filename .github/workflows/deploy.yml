@@ -1,32 +1,44 @@
-name: Deploy Auth Service
+name: Deploy Auth Service to Cloud Run
 
 on:
   push:
-    branches: ["main"]
+    branches: ["ranting"]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            cd /var/www/auth-service
-            git pull origin main
-            # inject secrets ke file .env
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-            echo "REDIRECT_URL=${{ secrets.REDIRECT_URL }}" > .env
-            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
-            echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
-            echo "SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }}" >> .env
-            # restart service
-            docker compose up -d --build auth
-            docker image prune -af --filter "dangling=true"
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Configure Docker auth
+        run: gcloud auth configure-docker asia-southeast2-docker.pkg.dev
+
+      - name: Build and Push Docker image
+        run: |
+          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ranting-repo/auth-service:latest"
+          docker build -t $IMAGE .
+          docker push $IMAGE
+
+      - name: Deploy to Cloud Run
+        run: |
+          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/ranting-repo/auth-service:latest"
+          gcloud run deploy auth-service \
+            --image $IMAGE \
+            --region asia-southeast2 \
+            --platform managed \
+            --cpu 1 \
+            --memory 512Mi \
+            --concurrency 80 \
+            --min-instances 0 \
+            --max-instances 3 \
+            --allow-unauthenticated
+
