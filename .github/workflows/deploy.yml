@@ -49,4 +49,6 @@ jobs:
             --concurrency 80 \
             --min-instances 0 \
             --max-instances 3 \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --set-secrets DATABASE_URL=DATABASE_URL:latest,SECRET_KEY=SECRET_KEY:latest,SESSION_SECRET_KEY=SESSION_SECRET_KEY:latest,GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID:latest,GOOGLE_CLIENT_SECRET=GOOGLE_CLIENT_SECRET:latest,REDIRECT_URL=REDIRECT_URL:latest,REDIRECT_RESPONSE=REDIRECT_RESPONSE:latest
+
