@@ -20,7 +20,6 @@ dist/
 # Configs & env
 .env
 .env.*
-*.ini
 *.cfg
 
 # Tests & coverage
