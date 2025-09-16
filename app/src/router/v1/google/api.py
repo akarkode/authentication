@@ -17,7 +17,7 @@ from app.src.schemas.user import UserBaseModel
 from app.src.database.session import get_async_session
 
 
-router = APIRouter(prefix="/auth/google", tags=["Authentication"])
+router = APIRouter(prefix="/google", tags=["Authentication"])
 logger = logging.getLogger(__name__)
 token_service = TokenService()
 crud_user = CRUDUser()
