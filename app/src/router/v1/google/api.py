@@ -35,10 +35,10 @@ async def callback(request: Request, session: AsyncSession = Depends(get_async_s
         if not await crud_user.get_by_provider_user_id(session=session, provider="google", provider_user_id=userinfo["sub"]):
             await crud_user.create(session=session, user=User(**UserBaseModel(**userinfo).model_dump(), provider="google", provider_user_id=userinfo["sub"]))
 
-        redirect = RedirectResponse("/")
+        redirect = RedirectResponse(settings.REDIRECT_RESPONSE)
         redirect.set_cookie(
             key="access_token", 
-            secure=True, 
+            secure=settings.COOKIE_IS_SECURE, 
             max_age=900,
             httponly=False, # Change this to True if you want to use HttpOnly cookie session
             samesite="strict", 
@@ -46,7 +46,7 @@ async def callback(request: Request, session: AsyncSession = Depends(get_async_s
         )
         redirect.set_cookie(
             key="refresh_token", 
-            secure=True, 
+            secure=settings.COOKIE_IS_SECURE, 
             max_age=86400,
             httponly=False, # Change this to True if you want to use HttpOnly cookie session 
             samesite="strict", 

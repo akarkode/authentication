@@ -3,6 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
@@ -11,6 +12,13 @@ from app.src.core.config import settings
 
 app = FastAPI(title="Authentication Service")
 app.include_router(router=router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(HTTPSRedirectMiddleware)
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSION_SECRET_KEY)
 

@@ -6,11 +6,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     SECRET_KEY: str = ""
     REDIRECT_URL: str = ""
-    FRONTEND_URL: str = ""
     DATABASE_URL: str = ""
-    JWT_SECRET_KEY: str = ""
     GOOGLE_CLIENT_ID: str = ""
+    REDIRECT_RESPONSE: str = ""
     SESSION_SECRET_KEY: str = ""
+    COOKIE_IS_SECURE: bool = False
     GOOGLE_CLIENT_SECRET: str = ""
 
 settings = Settings(_env_file='.env')
