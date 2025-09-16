@@ -23,5 +23,5 @@ WORKDIR /app
 COPY --from=builder /app /app
 COPY --from=builder /usr/local /usr/local
 
-EXPOSE 8001
-CMD ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8001"]
+EXPOSE 8080
+CMD ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
