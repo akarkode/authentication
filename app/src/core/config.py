@@ -1,6 +1,6 @@
 from __future__ import annotations
-
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 
 class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
@@ -13,4 +13,10 @@ class Settings(BaseSettings):
     COOKIE_IS_SECURE: bool = False
     GOOGLE_CLIENT_SECRET: str = ""
 
-settings = Settings(_env_file='.env')
+    @field_validator("*", mode="before")
+    def strip_all(cls, v):
+        if isinstance(v, str):
+            return v.strip()
+        return v
+
+settings = Settings(_env_file=".env")
