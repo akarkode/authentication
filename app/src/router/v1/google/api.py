@@ -25,10 +25,6 @@ crud_user = CRUDUser()
 
 @router.get("/login")
 async def login(request: Request):
-    print(f"{settings.GOOGLE_CLIENT_ID}|")
-    print(f"{settings.GOOGLE_CLIENT_SECRET}|")
-    print(f"{settings.REDIRECT_RESPONSE}|")
-    print(f"{settings.REDIRECT_URL}|")
     return await oauth.google.authorize_redirect(request, settings.REDIRECT_URL)
 
 @router.get("/callback")
