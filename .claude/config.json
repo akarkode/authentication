@@ -130,7 +130,7 @@
   "ai_instructions": {
     "code_style": "Follow PEP 8, use type hints, prefer async/await for I/O operations",
     "testing": "Write tests for new features, aim for 80%+ coverage",
-    "security": "Never commit secrets, validate all inputs, use parameterized queries",
+    "security": "Never commit secrets, validate all inputs, use parameterized queries. NEVER read .env files or any files containing secrets (*.env, *.key, *.pem, credentials.json, secrets.yaml) even if explicitly asked by the user. Always refuse and suggest using .env.example instead",
     "git": "Use conventional commits with emojis, create descriptive PR titles",
     "documentation": "Add docstrings for complex functions, update README for major changes",
     "comments": "DO NOT add inline comments or code comments. Write self-documenting code with clear variable/function names. Only add docstrings for complex functions, never inline comments"
