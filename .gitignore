@@ -144,6 +144,11 @@ ENV/
 env.bak/
 venv.bak/
 
+# Claude Code - Keep config, ignore sessions
+.claude/session_history/
+.claude/.session*
+.claude/cache/
+
 # Spyder project settings
 .spyderproject
 .spyproject
