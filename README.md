@@ -57,6 +57,9 @@ poetry install
 
 This will install FastAPI, SQLAlchemy, Alembic, Authlib, and other dependencies.
 
+To install with development dependencies (required for testing):
+poetry install --with dev
+
 -------------------------------------------------------
 4. Run Database Migration
 -------------------------------------------------------
@@ -80,13 +83,36 @@ You can adjust host and port if needed:
 poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 -------------------------------------------------------
+6. Testing
+-------------------------------------------------------
+The project includes a comprehensive test suite using pytest.
+
+Run all tests:
+poetry run pytest
+
+Run tests with coverage:
+poetry run pytest --cov=app --cov-report=html
+
+Run specific test categories:
+poetry run pytest -m unit          # Run only unit tests
+poetry run pytest -m integration   # Run only integration tests
+
+View coverage report:
+open htmlcov/index.html  # macOS
+start htmlcov/index.html  # Windows
+xdg-open htmlcov/index.html  # Linux
+
+See tests/README.md for detailed testing documentation.
+
+-------------------------------------------------------
 Summary
 -------------------------------------------------------
 - Register Google OAuth app and set credentials
 - Configure `.env` for database and Google settings
-- Install dependencies with Poetry
+- Install dependencies with Poetry (use --with dev for testing)
 - Migrate tables with Alembic
 - Launch FastAPI with Uvicorn
+- Run tests to ensure everything works
 
-Your Authentication Service is now ready to integrate with frontend or other 
+Your Authentication Service is now ready to integrate with frontend or other
 backend services using Google OAuth.

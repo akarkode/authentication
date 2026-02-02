@@ -24,7 +24,69 @@ dependencies = [
     "jinja2 (>=3.1.6,<4.0.0)"
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest (>=8.0.0,<9.0.0)",
+    "pytest-asyncio (>=0.23.0,<0.24.0)",
+    "pytest-cov (>=5.0.0,<6.0.0)",
+    "pytest-env (>=1.1.0,<2.0.0)",
+    "pytest-mock (>=3.14.0,<4.0.0)",
+    "faker (>=31.0.0,<32.0.0)",
+    "factory-boy (>=3.3.0,<4.0.0)",
+    "freezegun (>=1.5.0,<2.0.0)"
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-branch",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow running tests",
+]
+env = [
+    "ENV=test",
+    "DATABASE_URL=sqlite+aiosqlite:///:memory:",
+    "SECRET_KEY=test-secret-key-for-testing-only",
+    "SESSION_SECRET_KEY=test-session-secret-key",
+    "ALGORITHM=HS256",
+    "GOOGLE_CLIENT_ID=test-client-id",
+    "GOOGLE_CLIENT_SECRET=test-client-secret",
+    "REDIRECT_URL=http://localhost:8000/auth/v1/google/callback",
+    "REDIRECT_RESPONSE=http://localhost:3000",
+    "COOKIE_IS_SECURE=false",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
