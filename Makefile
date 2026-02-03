@@ -1,13 +1,9 @@
-.PHONY: help install install-dev test test-cov test-unit test-integration clean run migrate migrate-create db-upgrade lint format
+.PHONY: help install install-dev clean run migrate migrate-create db-upgrade lint format
 
 help:
 	@echo "Available commands:"
 	@echo "  install           - Install production dependencies"
 	@echo "  install-dev       - Install all dependencies including dev"
-	@echo "  test              - Run all tests"
-	@echo "  test-cov          - Run tests with coverage report"
-	@echo "  test-unit         - Run only unit tests"
-	@echo "  test-integration  - Run only integration tests"
 	@echo "  clean             - Remove test and build artifacts"
 	@echo "  run               - Run the development server"
 	@echo "  migrate           - Run database migrations"
@@ -21,18 +17,6 @@ install:
 
 install-dev:
 	poetry install --with dev
-
-test:
-	poetry run pytest -v
-
-test-cov:
-	poetry run pytest --cov=app --cov-report=html --cov-report=term-missing
-
-test-unit:
-	poetry run pytest -m unit -v
-
-test-integration:
-	poetry run pytest -m integration -v
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
