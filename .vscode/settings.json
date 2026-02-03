@@ -11,7 +11,7 @@
     "**/venv/": true,
     "**/.mypy_cache/": true,
     "**/.pytest_cache/": true,
-    "**/.vscode/": false, // set true kalau ingin sembunyikan folder konfigurasi VSCode
+    "**/.vscode/": false,
     "**/.git": true,
     "**/.DS_Store": true
   },
