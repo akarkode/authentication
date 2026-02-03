@@ -1,5 +1,28 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "The user has these custom code preferences: (1) Choose best solution only, no options (2) No comments in code (3) No explanations, just executable code (4) Prioritize: security > clean code > performance. Keep these in mind for your response."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Code written. Ensure: no comments, minimal whitespace, security-focused.'",
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(python *)",
@@ -49,8 +72,15 @@
       "Read(./secrets/**)",
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
+      "Read(./**/__pycache__/**)",
       "Edit(./.env)",
-      "Edit(./.env.*)"
+      "Edit(./.env.*)",
+      "Edit(./**/__pycache__/**)",
+      "Read(./**/*.pyc)",
+      "Read(./**/.pytest_cache/**)",
+      "Read(./**/.mypy_cache/**)",
+      "Read(./**/dist/**)",
+      "Read(./**/*.egg-info/**)"
     ]
   }
 }
