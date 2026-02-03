@@ -37,13 +37,14 @@
       "Bash(git log *)",
       "Bash(git branch *)",
       "Bash(git show *)",
-      "Bash(git commit *)",
       "Read",
       "Edit"
     ],
     "deny": [
       "Bash(rm -rf *)",
       "Bash(rm -r *)",
+      "Bash(git commit *)",
+      "Bash(git add *)",
       "Bash(git push *)",
       "Bash(git pull *)",
       "Bash(git merge *)",
