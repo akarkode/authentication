@@ -1,28 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "The user has these custom code preferences: (1) Choose best solution only, no options (2) No comments in code (3) No explanations, just executable code (4) Prioritize: security > clean code > performance. Keep these in mind for your response."
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Code written. Ensure: no comments, minimal whitespace, security-focused.'",
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Bash(python *)",
@@ -37,8 +14,18 @@
       "Bash(git log *)",
       "Bash(git branch *)",
       "Bash(git show *)",
+      "Bash(git fetch *)",
+      "Bash(docker ps *)",
+      "Bash(docker logs *)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(which *)",
+      "Bash(env)",
+      "Bash(pip freeze)",
+      "Bash(pytest --cov=. --cov-report=term-missing *)",
       "Read",
-      "Edit"
+      "Edit",
+      "Write"
     ],
     "deny": [
       "Bash(rm -rf *)",
@@ -81,7 +68,12 @@
       "Read(./**/.pytest_cache/**)",
       "Read(./**/.mypy_cache/**)",
       "Read(./**/dist/**)",
-      "Read(./**/*.egg-info/**)"
+      "Read(./**/*.egg-info/**)",
+      "Read(./**/node_modules/**)",
+      "Read(./**/venv/**/*.pyc)",
+      "Write(./.env)",
+      "Write(./.env.*)",
+      "Write(./secrets/**)"
     ]
   }
 }
